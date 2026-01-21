@@ -9,71 +9,98 @@ const route = useRoute()
 
 const open = ref(false)
 
-const links = [[{
-  label: 'Home',
-  icon: 'i-lucide-house',
-  to: '/',
-  onSelect: () => {
-    open.value = false
-  }
-}, {
-  label: 'Inbox',
-  icon: 'i-lucide-inbox',
-  to: '/inbox',
-  badge: '4',
-  onSelect: () => {
-    open.value = false
-  }
-}, {
-  label: 'Customers',
-  icon: 'i-lucide-users',
-  to: '/customers',
-  onSelect: () => {
-    open.value = false
-  }
-}, {
-  label: 'Settings',
-  to: '/settings',
-  icon: 'i-lucide-settings',
-  defaultOpen: true,
-  type: 'trigger',
-  children: [{
-    label: 'General',
-    to: '/settings',
-    exact: true,
+const links = [[
+  // 团队成员功能组
+  {
+    label: '工作台',
+    icon: 'i-lucide-layout-dashboard',
+    to: '/workspace',
     onSelect: () => {
       open.value = false
     }
   }, {
-    label: 'Members',
-    to: '/settings/members',
+    label: '应用管理',
+    icon: 'i-lucide-grid',
+    to: '/workspace/apps',
     onSelect: () => {
       open.value = false
     }
   }, {
-    label: 'Notifications',
-    to: '/settings/notifications',
+    label: '知识库管理',
+    icon: 'i-lucide-book-open',
+    to: '/workspace/knowledge',
     onSelect: () => {
       open.value = false
     }
   }, {
-    label: 'Security',
-    to: '/settings/security',
+    label: '提示词模板',
+    icon: 'i-lucide-message-square',
+    to: '/workspace/prompts',
     onSelect: () => {
       open.value = false
     }
-  }]
-}], [{
-  label: 'Feedback',
-  icon: 'i-lucide-message-circle',
-  to: 'https://github.com/nuxt-ui-templates/dashboard-vue',
-  target: '_blank'
-}, {
-  label: 'Help & Support',
-  icon: 'i-lucide-info',
-  to: 'https://github.com/nuxt/ui',
-  target: '_blank'
-}]] satisfies NavigationMenuItem[][]
+  }, {
+    label: '聊天对话',
+    icon: 'i-lucide-message-circle',
+    to: '/workspace/chat',
+    onSelect: () => {
+      open.value = false
+    }
+  }
+], [
+  // 超级管理员功能组
+  {
+    label: '系统管理',
+    to: '/admin',
+    icon: 'i-lucide-shield',
+    defaultOpen: false,
+    type: 'trigger',
+    children: [{
+      label: '用户管理',
+      to: '/admin/users',
+      onSelect: () => {
+        open.value = false
+      }
+    }, {
+      label: '模型配置',
+      to: '/admin/models',
+      onSelect: () => {
+        open.value = false
+      }
+    }, {
+      label: '工作空间',
+      to: '/admin/workspaces',
+      onSelect: () => {
+        open.value = false
+      }
+    }, {
+      label: '嵌入式管理',
+      to: '/admin/embed',
+      onSelect: () => {
+        open.value = false
+      }
+    }, {
+      label: '系统设置',
+      to: '/admin/settings',
+      onSelect: () => {
+        open.value = false
+      }
+    }]
+  }
+], [
+  // 外部链接组（保留）
+  {
+    label: 'Feedback',
+    icon: 'i-lucide-message-circle',
+    to: 'https://github.com/nuxt-ui-templates/dashboard-vue',
+    target: '_blank'
+  }, {
+    label: 'Help & Support',
+    icon: 'i-lucide-info',
+    to: 'https://github.com/nuxt/ui',
+    target: '_blank'
+  }
+]] satisfies NavigationMenuItem[][]
 
 const groups = computed(() => [{
   id: 'links',
@@ -132,6 +159,7 @@ if (cookie.value !== 'accepted') {
           <template #default="{ collapsed }">
             <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" />
 
+            <!-- 团队成员功能组 -->
             <UNavigationMenu
               :collapsed="collapsed"
               :items="links[0]"
@@ -140,9 +168,19 @@ if (cookie.value !== 'accepted') {
               popover
             />
 
+            <!-- 超级管理员功能组 -->
             <UNavigationMenu
               :collapsed="collapsed"
               :items="links[1]"
+              orientation="vertical"
+              tooltip
+              popover
+            />
+
+            <!-- 外部链接组 -->
+            <UNavigationMenu
+              :collapsed="collapsed"
+              :items="links[2]"
               orientation="vertical"
               tooltip
               class="mt-auto"

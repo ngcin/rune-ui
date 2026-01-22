@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useColorMode } from '@vueuse/core'
 import { useAuthStore } from '@/stores/auth'
+import { useThemeStore } from '@/stores/theme'
 
 defineProps<{
   collapsed?: boolean
@@ -13,6 +14,7 @@ const router = useRouter()
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
 const authStore = useAuthStore()
+const themeStore = useThemeStore()
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
@@ -52,11 +54,11 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       label: color,
       chip: color,
       slot: 'chip',
-      checked: appConfig.ui.colors.primary === color,
+      checked: themeStore.primaryColor === color,
       type: 'checkbox',
       onSelect: (e) => {
         e.preventDefault()
-        appConfig.ui.colors.primary = color
+        themeStore.setPrimary(color)
       }
     }))
   }, {
@@ -72,10 +74,10 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       chip: color === 'neutral' ? 'old-neutral' : color,
       slot: 'chip',
       type: 'checkbox',
-      checked: appConfig.ui.colors.neutral === color,
+      checked: themeStore.neutralColor === color,
       onSelect: (e) => {
         e.preventDefault()
-        appConfig.ui.colors.neutral = color
+        themeStore.setNeutral(color)
       }
     }))
   }]
@@ -119,20 +121,31 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
   >
     <UButton
-      v-bind="{
-        ...user,
-        label: collapsed ? undefined : user?.name,
-        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
-      }"
+      :label="collapsed ? undefined : user.name"
+      :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
       color="neutral"
       variant="ghost"
       block
       :square="collapsed"
       class="data-[state=open]:bg-elevated"
-      :ui="{
-        trailingIcon: 'text-dimmed'
-      }"
-    />
+      :ui="{ trailingIcon: 'text-dimmed' }"
+    >
+      <template #leading>
+        <UAvatar
+          v-if="user.avatar?.src"
+          :src="user.avatar.src"
+          :alt="user.avatar.alt"
+          size="sm"
+        />
+        <UAvatar
+          v-else
+          size="sm"
+          class="bg-primary text-white font-medium"
+        >
+          {{ (authStore.user?.username || 'U').charAt(0).toUpperCase() }}
+        </UAvatar>
+      </template>
+    </UButton>
 
     <template #chip-leading="{ item }">
       <div class="inline-flex items-center justify-center shrink-0 size-5">

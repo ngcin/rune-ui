@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import type { NavigationMenuItem } from '@nuxt/ui'
 import { useAuthStore } from '@/stores/auth'
+import { useThemeStore } from '@/stores/theme'
 
 const toast = useToast()
 const route = useRoute()
 const authStore = useAuthStore()
+const themeStore = useThemeStore()
+
+// 初始化主题
+onMounted(() => {
+  themeStore.initTheme()
+})
 
 const open = ref(false)
 

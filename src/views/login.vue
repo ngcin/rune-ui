@@ -132,14 +132,10 @@ onMounted(() => {
               v-model="state.username"
               placeholder="请输入用户名"
               size="lg"
-              icon="i-lucide-user"
+              leading-icon="i-lucide-user"
               :disabled="loading"
               autocomplete="username"
               class="w-full"
-              :ui="{
-                root: 'w-full',
-                icon: { base: 'text-neutral-400 flex-shrink-0' }
-              }"
             />
           </div>
 
@@ -153,14 +149,10 @@ onMounted(() => {
               type="password"
               placeholder="请输入密码"
               size="lg"
-              icon="i-lucide-lock"
+              leading-icon="i-lucide-lock"
               :disabled="loading"
               autocomplete="current-password"
               class="w-full"
-              :ui="{
-                root: 'w-full',
-                icon: { base: 'text-neutral-400 flex-shrink-0' }
-              }"
             />
           </div>
 
@@ -174,14 +166,10 @@ onMounted(() => {
                 v-model="state.captchaAnswer"
                 placeholder="请输入验证码"
                 size="lg"
-                icon="i-lucide-shield"
+                leading-icon="i-lucide-shield"
                 :disabled="loading"
                 autocomplete="off"
                 class="flex-1"
-                :ui="{
-                  root: 'flex-1',
-                  icon: { base: 'text-neutral-400 flex-shrink-0' }
-                }"
               />
               <div
                 v-if="captchaImage"

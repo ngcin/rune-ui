@@ -2,7 +2,7 @@
 import { useTemplateRef, h, ref, watch, resolveComponent, onMounted } from 'vue'
 import { upperFirst } from 'scule'
 import type { TableColumn } from '@nuxt/ui'
-import { getPaginationRowModel, type Row } from '@tanstack/table-core'
+import { getPaginationRowModel } from '@tanstack/table-core'
 import type { SysUser, PageParams, UserQuery, UserStatus } from '@/types/api'
 import { api } from '@/services/api'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
@@ -11,7 +11,6 @@ import UserResetPasswordDialog from './UserResetPasswordDialog.vue'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
-const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UCheckbox = resolveComponent('UCheckbox')
 
 const toast = useToast()
@@ -77,36 +76,6 @@ async function fetchUsers() {
 // Initial fetch
 onMounted(fetchUsers)
 
-function getRowItems(row: Row<SysUser>) {
-  return [
-    {
-      label: '编辑',
-      icon: 'i-lucide-edit',
-      onSelect() {
-        openEditDialog(row.original.id)
-      }
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: '重置密码',
-      icon: 'i-lucide-key',
-      onSelect() {
-        openResetPasswordDialog(row.original.id, row.original.username)
-      }
-    },
-    {
-      label: '删除',
-      icon: 'i-lucide-trash',
-      color: 'error',
-      onSelect() {
-        confirmDelete(row.original.id)
-      }
-    }
-  ]
-}
-
 const columns: TableColumn<SysUser>[] = [
   {
     id: 'select',
@@ -159,27 +128,43 @@ const columns: TableColumn<SysUser>[] = [
   },
   {
     id: 'actions',
+    header: '操作',
+    size: 280,
+    minSize: 280,
+    maxSize: 280,
+    meta: {
+      class: {
+        th: 'text-center',
+        td: 'text-center'
+      }
+    },
     cell: ({ row }) => {
-      return h(
-        'div',
-        { class: 'text-right' },
-        h(
-          UDropdownMenu,
-          {
-            content: {
-              align: 'end'
-            },
-            items: getRowItems(row)
-          },
-          () =>
-            h(UButton, {
-              icon: 'i-lucide-ellipsis-vertical',
-              color: 'neutral',
-              variant: 'ghost',
-              class: 'ml-auto'
-            })
-        )
-      )
+      return h('div', { class: 'flex items-center justify-center gap-1' }, [
+        h(UButton, {
+          label: '编辑',
+          icon: 'i-lucide-edit',
+          color: 'neutral',
+          variant: 'ghost',
+          size: 'xs',
+          onClick: () => openEditDialog(row.original.id)
+        }),
+        h(UButton, {
+          label: '重置密码',
+          icon: 'i-lucide-key',
+          color: 'neutral',
+          variant: 'ghost',
+          size: 'xs',
+          onClick: () => openResetPasswordDialog(row.original.id, row.original.username)
+        }),
+        h(UButton, {
+          label: '删除',
+          icon: 'i-lucide-trash',
+          color: 'error',
+          variant: 'ghost',
+          size: 'xs',
+          onClick: () => confirmDelete(row.original.id)
+        })
+      ])
     }
   }
 ]
@@ -385,11 +370,11 @@ function handleRefresh() {
         :columns="columns"
         :loading="loading"
         :ui="{
-          base: 'table-fixed border-separate border-spacing-0',
+          base: 'table-fixed w-full border-separate border-spacing-0',
           thead: '[&>tr]:bg-elevated/50 [&>tr]:after:content-none',
           tbody: '[&>tr]:last:[&>td]:border-b-0',
-          th: 'py-2 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r',
-          td: 'border-b border-default',
+          th: 'py-2 px-4 first:rounded-l-lg last:rounded-r-lg border-y border-default first:border-l last:border-r whitespace-nowrap',
+          td: 'py-2 px-4 border-b border-default',
           separator: 'h-0'
         }"
       />

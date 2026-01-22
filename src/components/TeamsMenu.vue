@@ -2,68 +2,66 @@
 import { ref, computed } from 'vue'
 import type { DropdownMenuItem } from '@nuxt/ui'
 
+export interface Workspace {
+  id: number
+  name: string
+}
+
 defineProps<{
   collapsed?: boolean
+  workspaces?: Workspace[]
 }>()
 
-const teams = ref([{
-  label: 'Vue',
-  avatar: {
-    src: 'https://github.com/vuejs.png',
-    alt: 'Vue'
-  }
-}, {
-  label: 'Vite',
-  avatar: {
-    src: 'https://github.com/vitejs.png',
-    alt: 'Vite'
-  }
-}, {
-  label: 'Vitest',
-  avatar: {
-    src: 'https://github.com/vitest-dev.png',
-    alt: 'Vitest'
-  }
-}])
-const selectedTeam = ref(teams.value[0])
+const emit = defineEmits<{
+  change: [workspace: Workspace]
+}>()
+
+// 默认工作空间数据
+const workspaces = ref<Workspace[]>([
+  { id: 1, name: '默认工作空间' },
+  { id: 2, name: '西南视觉项目组觉项目组' }
+])
+const selectedWorkspace = ref<Workspace>(workspaces.value[0])
 
 const items = computed<DropdownMenuItem[][]>(() => {
-  return [teams.value.map(team => ({
-    ...team,
+  return [workspaces.value.map(workspace => ({
+    label: workspace.name,
+    class: workspace.id === selectedWorkspace.value.id ? 'bg-muted' : '',
     onSelect() {
-      selectedTeam.value = team
+      selectedWorkspace.value = workspace
+      emit('change', workspace)
     }
-  })), [{
-    label: 'Create team',
-    icon: 'i-lucide-circle-plus'
-  }, {
-    label: 'Manage teams',
-    icon: 'i-lucide-cog'
-  }]]
+  }))]
 })
 </script>
 
 <template>
-  <UDropdownMenu
-    :items="items"
-    :content="{ align: 'center', collisionPadding: 12 }"
-    :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }"
+  <div
+    class="rounded-lg bg-muted/50 py-1"
+    :class="[
+      collapsed ? 'flex justify-center px-1' : 'mx-2 px-2'
+    ]"
   >
-    <UButton
-      v-bind="{
-        ...selectedTeam,
-        label: collapsed ? undefined : selectedTeam?.label,
-        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
+    <UDropdownMenu
+      :items="items"
+      :content="{
+        align: 'start',
+        collisionPadding: 8
       }"
-      color="neutral"
-      variant="ghost"
-      block
-      :square="collapsed"
-      class="data-[state=open]:bg-elevated"
-      :class="[!collapsed && 'py-2']"
-      :ui="{
-        trailingIcon: 'text-dimmed'
-      }"
-    />
-  </UDropdownMenu>
+    >
+      <UButton
+        :icon="collapsed ? 'i-lucide-users' : undefined"
+        :label="collapsed ? undefined : selectedWorkspace?.name"
+        :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
+        color="neutral"
+        variant="ghost"
+        block
+        :square="collapsed"
+        class="data-[state=open]:bg-elevated"
+        :ui="{
+          trailingIcon: 'text-dimmed'
+        }"
+      />
+    </UDropdownMenu>
+  </div>
 </template>

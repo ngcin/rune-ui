@@ -1,11 +1,7 @@
 <template>
   <UDashboardPanel id="knowledge">
     <template #header>
-      <UDashboardNavbar title="知识库管理">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <UDashboardNavbar title="知识库管理" />
     </template>
 
     <template #body>

@@ -1,11 +1,7 @@
 <template>
   <UDashboardPanel id="workspace">
     <template #header>
-      <UDashboardNavbar title="工作台">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <UDashboardNavbar title="工作台" />
     </template>
 
     <template #body>

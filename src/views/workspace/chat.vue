@@ -1,11 +1,7 @@
 <template>
   <UDashboardPanel id="chat">
     <template #header>
-      <UDashboardNavbar title="聊天对话">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <UDashboardNavbar title="聊天对话" />
     </template>
 
     <template #body>

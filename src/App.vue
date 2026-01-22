@@ -118,6 +118,15 @@ const groups = computed(() => [{
   }]
 }])
 
+const navigationUI = {
+  wrapper: 'space-y-1',
+  link: 'py-2.5',
+  label: 'text-lg font-medium',
+  icon: 'size-6'
+}
+
+const mainLinks = computed(() => [...links[0], ...links[1]])
+
 const cookie = useStorage('cookie-consent', 'pending')
 if (cookie.value !== 'accepted') {
   toast.add({
@@ -153,25 +162,30 @@ if (cookie.value !== 'accepted') {
           :ui="{ footer: 'lg:border-t lg:border-default' }"
         >
           <template #header="{ collapsed }">
-            <TeamsMenu :collapsed="collapsed" />
+            <div class="flex flex-col gap-2 w-full pt-2">
+              <!-- Logo 和系统名称 + 收缩按钮 -->
+              <div class="flex items-center w-full px-2" :class="collapsed ? 'justify-center' : 'justify-between'">
+                <!-- Logo + 系统名称（展开时显示） -->
+                <div v-if="!collapsed" class="flex items-center gap-2">
+                  <UIcon name="i-lucide-sparkles" class="text-xl text-primary" />
+                  <span class="text-base font-semibold">RuneAI</span>
+                </div>
+
+                <!-- 收缩/展开按钮 -->
+                <UDashboardSidebarCollapse />
+              </div>
+            </div>
           </template>
 
           <template #default="{ collapsed }">
-            <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" />
+            <!-- 团队切换 -->
+            <TeamsMenu :collapsed="collapsed" class="mb-1" />
 
-            <!-- 团队成员功能组 -->
+            <!-- 主导航菜单 -->
             <UNavigationMenu
               :collapsed="collapsed"
-              :items="links[0]"
-              orientation="vertical"
-              tooltip
-              popover
-            />
-
-            <!-- 超级管理员功能组 -->
-            <UNavigationMenu
-              :collapsed="collapsed"
-              :items="links[1]"
+              :items="mainLinks"
+              :ui="navigationUI"
               orientation="vertical"
               tooltip
               popover
@@ -181,6 +195,7 @@ if (cookie.value !== 'accepted') {
             <UNavigationMenu
               :collapsed="collapsed"
               :items="links[2]"
+              :ui="navigationUI"
               orientation="vertical"
               tooltip
               class="mt-auto"

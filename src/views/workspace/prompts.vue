@@ -1,11 +1,7 @@
 <template>
   <UDashboardPanel id="prompts">
     <template #header>
-      <UDashboardNavbar title="提示词模板">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <UDashboardNavbar title="提示词模板" />
     </template>
 
     <template #body>

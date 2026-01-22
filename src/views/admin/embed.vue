@@ -1,11 +1,7 @@
 <template>
   <UDashboardPanel id="embed">
     <template #header>
-      <UDashboardNavbar title="嵌入式管理">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <UDashboardNavbar title="嵌入式管理" />
     </template>
 
     <template #body>

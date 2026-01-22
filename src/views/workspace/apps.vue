@@ -1,11 +1,7 @@
 <template>
   <UDashboardPanel id="apps">
     <template #header>
-      <UDashboardNavbar title="应用管理">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <UDashboardNavbar title="应用管理" />
     </template>
 
     <template #body>

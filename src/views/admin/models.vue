@@ -1,11 +1,7 @@
 <template>
   <UDashboardPanel id="models">
     <template #header>
-      <UDashboardNavbar title="模型配置">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+      <UDashboardNavbar title="模型配置" />
     </template>
 
     <template #body>

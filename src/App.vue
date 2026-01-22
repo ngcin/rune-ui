@@ -5,11 +5,15 @@ import { useStorage } from '@vueuse/core'
 import type { NavigationMenuItem } from '@nuxt/ui'
 import { useAuthStore } from '@/stores/auth'
 import { useThemeStore } from '@/stores/theme'
+import { useConfirmDialog } from '@/composables/useConfirmDialog'
 
 const toast = useToast()
 const route = useRoute()
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+
+// 全局确认对话框
+const { open: confirmOpen, options: confirmOptions, handleConfirm: confirmHandleConfirm, handleCancel: confirmHandleCancel } = useConfirmDialog()
 
 // 初始化主题
 onMounted(() => {
@@ -228,4 +232,13 @@ if (cookie.value !== 'accepted') {
       </UDashboardGroup>
     </UApp>
   </Suspense>
+
+  <!-- 全局确认对话框 -->
+  <ConfirmDialog
+    :open="confirmOpen"
+    @update:open="confirmOpen = $event"
+    v-bind="confirmOptions"
+    @confirm="confirmHandleConfirm"
+    @cancel="confirmHandleCancel"
+  />
 </template>

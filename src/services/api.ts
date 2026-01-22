@@ -1,5 +1,5 @@
 import { ofetch } from 'ofetch'
-import type { Result, CaptchaResponse, LoginRequest, LoginResponse } from '@/types/api'
+import type { Result, CaptchaResponse, LoginRequest, LoginResponse, SysUser, UserCreateRequest, UserUpdateRequest, UserQuery, PageParams, PageResult } from '@/types/api'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -52,10 +52,42 @@ export const authApi = {
   }),
 }
 
+// User API
+export const usersApi = {
+  // Get paginated user list
+  page: (params: PageParams & UserQuery) =>
+    request<PageResult<SysUser>>('/api/sys/users', { params }),
+
+  // Get user by id
+  getById: (id: string) =>
+    request<SysUser>(`/api/sys/users/${id}`),
+
+  // Create user
+  create: (data: UserCreateRequest) =>
+    request<void>('/api/sys/users', { method: 'POST', body: data }),
+
+  // Update user
+  update: (id: string, data: UserUpdateRequest) =>
+    request<void>(`/api/sys/users/${id}`, { method: 'PUT', body: data }),
+
+  // Delete user (soft delete)
+  delete: (id: string) =>
+    request<void>(`/api/sys/users/${id}`, { method: 'DELETE' }),
+
+  // Update user status
+  updateStatus: (id: string, status: number) =>
+    request<void>(`/api/sys/users/${id}/status`, { method: 'PUT', params: { status } }),
+
+  // Reset password
+  resetPassword: (id: string, password: string) =>
+    request<void>(`/api/sys/users/${id}/reset-pwd`, { method: 'PUT', params: { password } }),
+}
+
 // Re-export api instance for custom requests
 export { apiInstance as fetch }
 
 // Default export for convenience
 export const api = {
   auth: authApi,
+  users: usersApi,
 }

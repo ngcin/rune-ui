@@ -28,7 +28,7 @@ export const router = createRouter({
     { path: '/workspace/chat', component: () => import('../views/workspace/chat.vue'), meta: { requiresAuth: true } },
     // 超级管理员功能
     { path: '/admin', component: () => import('../views/admin/index.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
-    { path: '/admin/users', component: () => import('../views/admin/users.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
+    { path: '/admin/users', component: () => import('../views/admin/users/index.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/admin/models', component: () => import('../views/admin/models.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/admin/workspaces', component: () => import('../views/admin/workspaces.vue'), meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/admin/embed', component: () => import('../views/admin/embed.vue'), meta: { requiresAuth: true, requiresAdmin: true } },

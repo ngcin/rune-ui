@@ -3,9 +3,11 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 import type { NavigationMenuItem } from '@nuxt/ui'
+import { useAuthStore } from '@/stores/auth'
 
 const toast = useToast()
 const route = useRoute()
+const authStore = useAuthStore()
 
 const open = ref(false)
 
@@ -152,7 +154,11 @@ if (cookie.value !== 'accepted') {
 <template>
   <Suspense>
     <UApp>
-      <UDashboardGroup unit="rem" storage="local">
+      <!-- 登录页面 - 不显示 Dashboard 布局 -->
+      <RouterView v-if="!authStore.isAuthenticated" />
+
+      <!-- 业务页面 - 显示完整 Dashboard 布局 -->
+      <UDashboardGroup v-else unit="rem" storage="local">
         <UDashboardSidebar
           id="default"
           v-model:open="open"

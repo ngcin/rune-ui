@@ -1,45 +1,47 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useColorMode } from '@vueuse/core'
+import { useAuthStore } from '@/stores/auth'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
+const router = useRouter()
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
+const authStore = useAuthStore()
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
-const user = ref({
-  name: 'Benjamin Canac',
-  avatar: {
-    src: 'https://github.com/benjamincanac.png',
-    alt: 'Benjamin Canac'
-  }
-})
+const user = computed(() => ({
+  name: authStore.user?.nickname || authStore.user?.username || 'Unknown',
+  avatar: authStore.user?.avatar
+    ? { src: authStore.user.avatar, alt: authStore.user.username }
+    : undefined
+}))
+
+function handleLogout() {
+  authStore.clearAuth()
+  router.push('/login')
+}
 
 const items = computed<DropdownMenuItem[][]>(() => ([[{
   type: 'label',
   label: user.value.name,
   avatar: user.value.avatar
 }], [{
-  label: 'Profile',
-  icon: 'i-lucide-user'
-}, {
-  label: 'Billing',
-  icon: 'i-lucide-credit-card'
-}, {
-  label: 'Settings',
+  label: '设置',
   icon: 'i-lucide-settings',
   to: '/settings'
 }], [{
-  label: 'Theme',
+  label: '主题',
   icon: 'i-lucide-palette',
   children: [{
-    label: 'Primary',
+    label: '主色',
     slot: 'chip',
     chip: appConfig.ui.colors.primary,
     content: {
@@ -54,12 +56,11 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       type: 'checkbox',
       onSelect: (e) => {
         e.preventDefault()
-
         appConfig.ui.colors.primary = color
       }
     }))
   }, {
-    label: 'Neutral',
+    label: '中性色',
     slot: 'chip',
     chip: appConfig.ui.colors.neutral === 'neutral' ? 'old-neutral' : appConfig.ui.colors.neutral,
     content: {
@@ -74,26 +75,24 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       checked: appConfig.ui.colors.neutral === color,
       onSelect: (e) => {
         e.preventDefault()
-
         appConfig.ui.colors.neutral = color
       }
     }))
   }]
 }, {
-  label: 'Appearance',
+  label: '外观',
   icon: 'i-lucide-sun-moon',
   children: [{
-    label: 'Light',
+    label: '浅色',
     icon: 'i-lucide-sun',
     type: 'checkbox',
     checked: colorMode.value === 'light',
     onSelect(e: Event) {
       e.preventDefault()
-
       colorMode.value = 'light'
     }
   }, {
-    label: 'Dark',
+    label: '深色',
     icon: 'i-lucide-moon',
     type: 'checkbox',
     checked: colorMode.value === 'dark',
@@ -107,31 +106,9 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     }
   }]
 }], [{
-  label: 'Templates',
-  icon: 'i-lucide-layout-template',
-  children: [{
-    label: 'Starter',
-    to: 'https://starter-vue-template.nuxt.dev/'
-  }, {
-    label: 'Dashboard',
-    to: 'https://dashboard-vue-template.nuxt.dev/',
-    color: 'primary',
-    checked: true,
-    type: 'checkbox'
-  }]
-}], [{
-  label: 'Documentation',
-  icon: 'i-lucide-book-open',
-  to: 'https://ui.nuxt.com/docs/getting-started/installation/vue',
-  target: '_blank'
-}, {
-  label: 'GitHub repository',
-  icon: 'simple-icons:github',
-  to: 'https://github.com/nuxt-ui-templates/dashboard-vue',
-  target: '_blank'
-}], [{
-  label: 'Log out',
-  icon: 'i-lucide-log-out'
+  label: '退出登录',
+  icon: 'i-lucide-log-out',
+  onSelect: handleLogout
 }]]))
 </script>
 

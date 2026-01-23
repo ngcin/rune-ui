@@ -34,8 +34,16 @@ const selectedWorkspace = ref<Workspace | null>(null)
 
 // Auto-reset selection when workspace is deleted/filtered
 watch(workspaces, () => {
-  if (!workspaces.value || !workspaces.value.find(w => w.id === selectedWorkspace.value?.id)) {
+  if (!workspaces.value) {
     selectedWorkspace.value = null
+    return
+  }
+
+  // 如果当前选中的工作空间不在列表中（被删除或筛选），选中第一个工作空间
+  const exists = workspaces.value.find(w => w.id === selectedWorkspace.value?.id)
+  if (!exists) {
+    // 默认选中第一个工作空间（如果列表不为空）
+    selectedWorkspace.value = workspaces.value[0] || null
   }
 }, { deep: true })
 
@@ -62,9 +70,9 @@ function handleRefresh() {
 <template>
   <UDashboardPanel
     id="workspaces-left"
-    :default-size="25"
-    :min-size="20"
-    :max-size="30"
+    :default-size="20"
+    :min-size="18"
+    :max-size="22"
     resizable
   >
     <UDashboardNavbar title="工作空间">

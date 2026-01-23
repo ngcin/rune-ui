@@ -32,6 +32,10 @@ const apiInstance = ofetch.create({
 // Helper function to unwrap Result<T> data
 async function request<T>(url: string, options?: any): Promise<T> {
   const response = await apiInstance<Result<T>>(url, options)
+  // Check business code - throw error if not successful
+  if (response.code !== 200 || response.success === false) {
+    throw new Error(response.message || '请求失败')
+  }
   return response.data
 }
 

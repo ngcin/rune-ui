@@ -1,5 +1,5 @@
 import { ofetch } from 'ofetch'
-import type { Result, CaptchaResponse, LoginRequest, LoginResponse, SysUser, UserCreateRequest, UserUpdateRequest, UserQuery, PageParams, PageResult } from '@/types/api'
+import type { Result, CaptchaResponse, LoginRequest, LoginResponse, SysUser, UserCreateRequest, UserUpdateRequest, UserQuery, PageParams, PageResult, Workspace, WorkspaceRequest, WorkspaceQuery, WorkspaceMember, WorkspaceMemberRequest } from '@/types/api'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -90,4 +90,36 @@ export { apiInstance as fetch }
 export const api = {
   auth: authApi,
   users: usersApi,
+}
+
+// Workspace API
+export const workspacesApi = {
+  // List all workspaces (returns list directly, no pagination)
+  list: (params?: WorkspaceQuery): Promise<Workspace[]> =>
+    request<Workspace[]>('/api/sys/workspaces', { params }),
+
+  getById: (id: string) =>
+    request<Workspace>(`/api/sys/workspaces/${id}`),
+
+  create: (data: WorkspaceRequest) =>
+    request<Workspace>('/api/sys/workspaces', { method: 'POST', body: data }),
+
+  update: (id: string, data: WorkspaceRequest) =>
+    request<Workspace>(`/api/sys/workspaces/${id}`, { method: 'PUT', body: data }),
+
+  delete: (id: string) =>
+    request<void>(`/api/sys/workspaces/${id}`, { method: 'DELETE' }),
+
+  // Workspace Members
+  pageMembers: (workspaceId: string, params: PageParams & Omit<WorkspaceQuery, 'status'>) =>
+    request<PageResult<WorkspaceMember>>(`/api/sys/workspaces/${workspaceId}/members`, { params }),
+
+  addMember: (workspaceId: string, data: WorkspaceMemberRequest) =>
+    request<void>(`/api/sys/workspaces/${workspaceId}/members`, { method: 'POST', body: data }),
+
+  removeMember: (workspaceId: string, userId: string) =>
+    request<void>(`/api/sys/workspaces/${workspaceId}/members/${userId}`, { method: 'DELETE' }),
+
+  updateMemberRole: (workspaceId: string, userId: string, role: string) =>
+    request<void>(`/api/sys/workspaces/${workspaceId}/members/${userId}/role`, { method: 'PUT', body: { role } }),
 }

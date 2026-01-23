@@ -91,3 +91,56 @@ export interface UserQuery {
   status?: UserStatus
   keyword?: string
 }
+
+// Workspace Types
+export interface Workspace {
+  id: string
+  name: string
+  description?: string
+  memberCount: number
+  createTime: string
+  updateTime?: string
+}
+
+export interface WorkspaceRequest {
+  id?: number
+  name: string
+  description?: string
+}
+
+export interface WorkspaceQuery {
+  name?: string
+  keyword?: string
+}
+
+// Workspace Member Types
+export type WorkspaceMemberRole = 'WORKSPACE_ADMIN' | 'WORKSPACE_USER'
+
+export interface WorkspaceMember {
+  id: string
+  workspaceId: string
+  userId: string
+  username: string
+  nickname?: string
+  email?: string
+  avatar?: string
+  role: WorkspaceMemberRole
+  status: number
+  createTime: string
+}
+
+export interface WorkspaceMemberRequest {
+  userId: string
+  role: WorkspaceMemberRole
+}
+
+export interface WorkspaceMemberQuery {
+  workspaceId: string
+  username?: string
+  nickname?: string
+  role?: WorkspaceMemberRole
+  keyword?: string
+}
+
+// Re-export PageResult as PaginatedResponse for consistency
+export type PaginatedResponse<T> = PageResult<T>
